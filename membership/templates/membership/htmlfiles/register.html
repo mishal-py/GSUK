@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-lg border-0 rounded-4">
+      <div class="card-header bg-primary text-white text-center rounded-top-4">
+        <h2 class="mb-0">GSUK Membership Registration</h2>
+      </div>
+      <div class="card-body p-4 bg-light">
+
+        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+          {% csrf_token %}
+
+          {% for field in form %}
+            {% if field.name != 'opt_out_contact' and field.name != 'rules_confirmed' %}
+              <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-primary">
+                  {{ field.label }}
+                </label>
+                {{ field }}
+
+                {% if field.help_text %}
+                  <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                
+                {% for error in field.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          <!-- Custom Styled Opt-Out Section -->
+          <div class="form-check mb-3">
+            {{ form.opt_out_contact }}
+            <label class="form-check-label text-muted" for="{{ form.opt_out_contact.id_for_label }}">
+              GSUK would like to contact you from time to time regarding its various activities and concerning their developments.
+              <strong>Please tick this only if you want to opt out of it.</strong>
+            </label>
+          </div>
+
+          <!-- Custom Styled Rules Confirmation -->
+          <div class="form-check mb-4">
+            {{ form.rules_confirmed }}
+            <label class="form-check-label text-danger fw-semibold" for="{{ form.rules_confirmed.id_for_label }}">
+              I confirm that I have read and understood the rules and regulations of GSUK and that all the details provided are correct.
+              <span class="d-block small text-muted">
+                False information could mean your membership will be cancelled immediately.
+              </span>
+            </label>
+            {% for error in form.rules_confirmed.errors %}
+              <div class="text-danger mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="bi bi-person-plus"></i> Submit Registration
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
