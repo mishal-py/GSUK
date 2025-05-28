@@ -1,2 +1,38 @@
-<h2>Membership Registered Successfully!</h2>
-<a href="{% url 'register' %}">Register another</a>
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static "website/style.css" %}">
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 rounded-lg">
+        <div class="text-center">
+            <h2 class="mb-4 text-success"><i class="bi bi-check-circle-fill me-2"></i> Membership Registered Successfully!</h2>
+            <h4 class="mb-3">{{ member.first_name|title }} {{ member.last_name|title }}</h4>
+            <p class="lead text-muted">Thank you for registering with Galkot Society UK!</p>
+        </div>
+
+        <hr class="my-4">
+
+        <div>
+            <p class="mb-2">To complete your registration, please make a payment of <strong>£{{ member.membership_fee }}</strong> to the following bank account:</p>
+            <div class="bg-light p-3 rounded mb-3">
+                <ul class="list-unstyled mb-0">
+                    <li><strong>Bank:</strong> Santander</li>
+                    <li><strong>Sort Code:</strong> 09-01-29</li>
+                    <li><strong>Account Number:</strong> 07384794</li>
+                </ul>
+            </div>
+            <p class="fst-italic text-muted mb-2">Please use the following format as a reference when you transfer the amount to GSUK:</p>
+            <p class="fw-bold text-info">e.g., {{ member.first_name|title }} {{ member.last_name|title }} Membership Fee</p>
+        </div>
+
+        <hr class="my-4">
+
+        <p class="text-muted">Alternatively, you can send a cheque to Galkot Society UK.</p>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'register' %}" class="btn btn-primary me-2">Register Another</a>
+            <a href="/" class="btn btn-outline-secondary">Go to Homepage</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

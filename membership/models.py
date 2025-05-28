@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.core.mail import send_mail
 # Create your models here.
 
 
@@ -29,6 +28,8 @@ class Member(models.Model):
     approved_by = models.ForeignKey(
         User, null=True, blank=True, on_delete=models.SET_NULL)
     approval_date = models.DateTimeField(null=True, blank=True)
+    rejected = models.BooleanField(default=False)
+    rejection_reason = models.TextField(null=True, blank=True)
 
     def approve(self, user):
         self.approved = True
@@ -36,13 +37,19 @@ class Member(models.Model):
         self.approval_date = timezone.now()
         self.save()
 
-        send_mail(
-            subject='GSUK Membership Approved',
-            message='Congratulations, your GSUK membership has been approved.',
-            from_email=None,
-            recipient_list=[self.email],
-            fail_silently=True,
-        )
+    def reject(self, reason):
+        self.rejected = True
+        self.approved = False
+        self.rejection_reason = reason
+        self.save()
+
+    @property
+    def membership_fee(self):
+        if self.membership_type == self.LIFE:
+            return 100.00
+        elif self.membership_type == self.ORDINARY:
+            return 12.00
+        return 0.00
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

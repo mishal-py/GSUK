@@ -9,15 +9,17 @@ def register_member(request):
     if request.method == 'POST':
         form = MemberForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('registration_success')
+            member = form.save()
+            return redirect('registration_success', member_id=member.id)
     else:
         form = MemberForm()
     return render(request, 'membership/htmlfiles/register.html', {'form': form})
 
 
-def registration_success(request):
-    return render(request, 'membership/htmlfiles/success.html')
+def registration_success(request, member_id):
+    member = get_object_or_404(Member, id=member_id)
+    fee = member.membership_fee
+    return render(request, 'membership/htmlfiles/success.html', {'member': member, 'fee': fee})
 
 
 def is_officer(user):
@@ -57,6 +59,7 @@ def reject_member(request, member_id):
         form = RejectionForm(request.POST)
         if form.is_valid():
             member.reject(form.cleaned_data['reason'])
+            member.delete()
             return redirect('pending_members')
     else:
         form = RejectionForm()
